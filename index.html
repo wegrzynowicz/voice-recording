@@ -1,0 +1,98 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Audio recording">
+    <meta name="keywords" content="HTML,CSS,JavaScript">
+    <meta name="author" content="Przemyslaw Wegrzynowicz">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+<div>
+    <div>
+        <button id="record" disabled> record </button>
+	</div>
+	<div>
+        <button id="stop" disabled> stop </button>
+	</div>
+	<div>
+        <audio id="audio" controls></audio>
+	</div>
+	<div>
+        <a id="downloadLink" href></a>
+	</div>
+</div>
+    <script type="text/javascript">
+            var recordButton, stopButton, recorder;
+            var chunks = [];
+            var downloadLink = document.querySelector('a#downloadLink');
+            window.onload = function () {
+                recordButton = document.getElementById("record");
+                stopButton = document.getElementById("stop");
+                navigator.mediaDevices.getUserMedia({
+                    audio: true
+                })
+                    .then(function (stream) {
+
+                        recordButton.disabled = false;
+                        recordButton.addEventListener('click', startRecording);
+                        stopButton.addEventListener('click', stopRecording);
+                        recorder = new MediaRecorder(stream);
+                        recorder.ondataavailable = uploadAudio
+                    });
+            };
+
+            function startRecording() {
+                chunks = [];
+                recordButton.disabled = true;
+                stopButton.disabled = false;
+                recorder.start();
+
+            }
+
+            function stopRecording() {
+                recordButton.disabled = false;
+                stopButton.disabled = true;
+                recorder.stop();
+            }
+
+    function uploadAudio(e) { 
+        chunks.push(e.data)
+		var rand = Math.floor((Math.random() * 10000000));
+        var fileName = "audio_" + rand + ".wav";
+		var blob = new Blob(chunks, {
+			type: 'audio/wav'
+		});
+		var url = URL.createObjectURL(blob);
+		var formData = new FormData();
+		formData.append('audio-filename', fileName);
+		formData.append('audio-blob', blob);
+
+		xhr('save.php', formData, function (fileURL) {
+			//window.open(fileURL);
+		});
+
+		function xhr(url, data, callback) {
+			var request = new XMLHttpRequest();
+			request.onreadystatechange = function () {
+				if (request.readyState == 4 && request.status == 200) {
+					callback(location.href + request.responseText);
+				}
+			};
+			request.open('POST', url);
+			request.send(data);
+		}
+		var audio = document.getElementById('audio');
+        audio.src = window.URL.createObjectURL(e.data);
+        var audioURL = audio.src;
+        downloadLink.href = audioURL;
+        downloadLink.innerHTML = audioURL;
+        downloadLink.setAttribute("download", fileName);
+        downloadLink.setAttribute("name", fileName);
+		audio.play();
+    }
+	</script>
+</body>
+
+</html>
