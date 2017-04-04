@@ -7,27 +7,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title> Voice recording</title>
 
-<link rel="stylesheet" type="text/css" href="css/main.css" />
+
+<link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="css/theme.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]-->
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+
 </head>
 
 <body>
-<div id="container">
+
+<div class = "container">
 <?php
 $ua = strtolower($_SERVER['HTTP_USER_AGENT']);
 if(stripos($ua,'android') == false) { // && stripos($ua,'mobile') !== false) {
-?>
-        <div id="header_box">    	
-
-        <div id="header_menu">
-        	<ul>
+?>	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">Strona Główna</a>
+            </div>
+            
+          <ul class="nav navbar-nav">
             	<li><a href="#">Nagraj dźwięk</a></li>
                 <li><a href="#">O Projekcie</a></li>
                 <li><a href="#">Kontakt</a></li>
             </ul>
         </div>
-        </div>
-		<div id="header_main">
-    	<div id="header_main_text">
+	</nav>
+	</div>
+        <div class ="container">
+		<div class="jumbotron">
         	<h2>Rozpoznawanie mowy</h2>
             <p>
             Rozpoznawanie mowy to młody i wciąż eksplorowany temat. 
@@ -40,37 +54,31 @@ if(stripos($ua,'android') == false) { // && stripos($ua,'mobile') !== false) {
             <p>
             Wypróbuj rozpoznawanie mowy.
             </p>
-        </div>
-        <div id="header_main_image">
-        	<img src="images/indeks.jpg" alt="Image" width="100%" height="45%" />
-        </div>
+        
+       
 	</div>
-    <div id="boxy">
-    <div id="boxy_navig">
-        <ul>
-            <li><a href="#">Nagraj dźwięk</a></li>
-            <li><a href="#">O projekcie</a></li>
-            <li><a href="#">Kontakt</a></li>
-		</ul>
-    </div>
+	</div>
+    <div class="container">
+  
     <?php
     }else{
         ?>
-        <div id='boxy'>
+        <div class="container">
     <?php
     }
     ?>
-    <div id="boxy_content">
+    
+     <div class = "well" id="boxy_content">
 		<h2>Nagrywanie mowy</h2>
 		
 		<form id="Formularz" name="Formularz" action="nagraj.php" method="post"onsubmit="return false;">
-		<table bgcolor="silver">
-		<tr>
-		<td>Imię i Nazwisko:</td><td><input type="text" name="imie" id="imie" /></td>
-		</tr>
-		<tr>
-		<td><p>Komenda</p></td>
-		<td>
+		<div class="form-group">
+		<label for = "imie">Imię i Nazwisko</label><input type="text" name="imie" id="imie" />
+		</div>
+		
+		<div class="form-group">
+		
+		<label for ="optionList">Komenda</label>
 		<select name="Komenda" id="optionList">
 			<option selected="selected">Bieg</option>
 			<option>Brzuszki</option>
@@ -85,7 +93,8 @@ if(stripos($ua,'android') == false) { // && stripos($ua,'mobile') !== false) {
 			<option>Upadek</option>
 			<option>Tak</option>
 			<option>Nie</option>
-		</select></td></tr>
+		</select>
+		</div>
 		<?php
 			$dzis=getdate();
 			$dzien=$dzis['mday'];
@@ -95,12 +104,13 @@ if(stripos($ua,'android') == false) { // && stripos($ua,'mobile') !== false) {
 			$min=$dzis['minutes'];
 			$sek=$dzis['seconds'];
 		?>
-		<tr><br />
-		<td colspan="2" align="center"><br />
-		<input type="submit" onclick="getDataAndChangeToRecording()" value="Rozpocznij nagrywanie" />
-		<input type="reset" value="Wyczyść dane" />
-		</td></tr>
+		
+		
+			<input class="btn btn-success" type="submit" onclick="getDataAndChangeToRecording()" value="Rozpocznij nagrywanie" />
+			<input class="btn btn-warning" type="reset" value="Wyczyść dane" />
+		
 		</form>
+		</div>
 		</div>
 	</div>
 
@@ -124,9 +134,9 @@ if(stripos($ua,'android') == false) { // && stripos($ua,'mobile') !== false) {
         recordDiv.innerHTML = '<h2>Nagrywanie mowy</h2>\
             <h2> Jako: ' + name + '</h2>\
             <h2> Czynność: ' + selectedOption + '<h2>\
-            <button id="record" disabled style="margin: 5px"> Rozpocznij </button><br>\
+            <button class="btn btn-success btn-lg" id="record" disabled > Rozpocznij </button><br>\
             <audio id="audio" controls></audio><br>\
-            <button onclick="location.reload()" style="margin: 5px"> Wybierz inną czynność</button>\
+            <button type="button" class="btn btn-primary btn-lg " onclick="location.reload()" > Wybierz inną czynność</button>\
             <a id="downloadLink" href></a>';
         
         // nagrywanie
