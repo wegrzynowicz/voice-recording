@@ -12,7 +12,10 @@
 
 <body>
 <div id="container">
-
+<?php
+$ua = strtolower($_SERVER['HTTP_USER_AGENT']);
+if(stripos($ua,'android') == false) { // && stripos($ua,'mobile') !== false) {
+?>
         <div id="header_box">    	
 
         <div id="header_menu">
@@ -50,6 +53,13 @@
             <li><a href="#">Kontakt</a></li>
 		</ul>
     </div>
+    <?php
+    }else{
+        ?>
+        <div id='boxy'>
+    <?php
+    }
+    ?>
     <div id="boxy_content">
 		<h2>Nagrywanie mowy</h2>
 		
@@ -96,6 +106,12 @@
 
 	</body>
     <script>
+    var ua = navigator.userAgent.toLowerCase();
+    var isAndroid = ua.indexOf("android") > -1; //&& ua.indexOf("mobile");
+    if(isAndroid) {
+        document.getElementById("container").style.width = "100%"
+    }
+    
     var selectedOption;
     var name;
     
@@ -108,8 +124,9 @@
         recordDiv.innerHTML = '<h2>Nagrywanie mowy</h2>\
             <h2> Jako: ' + name + '</h2>\
             <h2> Czynność: ' + selectedOption + '<h2>\
-            <button id="record" disabled> Rozpocznij </button>\
-            <audio id="audio" controls></audio>\
+            <button id="record" disabled style="margin: 5px"> Rozpocznij </button><br>\
+            <audio id="audio" controls></audio><br>\
+            <button onclick="location.reload()" style="margin: 5px"> Wybierz inną czynność</button>\
             <a id="downloadLink" href></a>';
         
         // nagrywanie
@@ -165,7 +182,7 @@
             formData.append('audio-blob', blob);
 
             xhr('save.php', formData, function (fileURL) {
-                window.open(fileURL);
+                //window.open(fileURL);
             });
 
             function xhr(url, data, callback) {
