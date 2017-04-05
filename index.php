@@ -149,9 +149,9 @@
             chunks.push(e.data)
             var rand = Math.floor((Math.random() * 10000000));
             var date = new Date();
-            var fileName = cleanUp(selectedOption) + '-' + cleanUp(name) + '-' + date.getFullYear().toString() + '_' + pad2(date.getMonth() + 1) + '_' + pad2( date.getDate()) + '_' + pad2( date.getHours() ) + '_' + pad2( date.getMinutes() ) + '_' + pad2( date.getSeconds() ) + '-' + rand + ".wav";
+            var fileName = cleanUp(selectedOption) + '-' + cleanUp(name) + '-' + date.getFullYear().toString() + '_' + pad2(date.getMonth() + 1) + '_' + pad2( date.getDate()) + '_' + pad2( date.getHours() ) + '_' + pad2( date.getMinutes() ) + '_' + pad2( date.getSeconds() ) + '-' + rand;// + ".wav"
             var blob = new Blob(chunks, {
-                type: 'audio/wav'
+                type: 'audio'
             });
             var url = URL.createObjectURL(blob);
             var formData = new FormData();
