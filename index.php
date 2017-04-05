@@ -73,12 +73,13 @@
     function getDataAndChangeToRecording(){
         var nameField = document.getElementById("imie");
         name = nameField.value;
+        ilosc = 0;
         var optionList = document.getElementById("option-list");
         selectedOption = optionList.options[optionList.selectedIndex].text;
         var recordDiv = document.getElementById("boxy-content");
         recordDiv.innerHTML = '<h2>Nagrywanie mowy</h2>\
-            <h3> Jako: ' + name + '</h2>\
-            <h3> Czynność: ' + selectedOption + '<h2>\
+            <h3> Jako: ' + name + '</h3>\
+            <h3> Czynność: ' + selectedOption + '<h3>\
 			<div class="row">\
 			<audio id="audio" controls></audio><br>\
 			</div>\
@@ -89,7 +90,8 @@
 				<div class="col-xs-12 col-md-6">\
 					<button type="button" class="btn btn-primary btn-lg " onclick="location.reload()" > Wybierz inną czynność</button>\
 				</div>\
-			</div>';
+			</div>\
+            <h3 id="liczbaNagran"> Liczba nagrań: ' + ilosc + '<h3>';
 			//<a id="downloadLink" href></a>';
 			
         // nagrywanie
@@ -123,6 +125,8 @@
         }
 
         function stopRecording() {
+            ilosc++;
+            document.getElementById("liczbaNagran").innerText = "Liczba nagrań: " + ilosc;
             clearTimeout(timeLimit);
             recordButton.removeEventListener('click', stopRecording);
             recordButton.textContent = "Rozpocznij nagranie";
