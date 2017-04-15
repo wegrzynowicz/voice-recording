@@ -1,3 +1,6 @@
 *.wav
 .idea/*
 *.jpg
+*.npz
+*.h5
+*.json

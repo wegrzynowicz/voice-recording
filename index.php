@@ -183,7 +183,7 @@
             //downloadLink.innerHTML = audioURL;
             //downloadLink.setAttribute("download", fileName);
             //downloadLink.setAttribute("name", fileName);
-            audio.play();
+            //audio.play();
         }
     }
     
