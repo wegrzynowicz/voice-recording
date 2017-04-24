@@ -1,4 +1,5 @@
 import numpy as np
+import json
 from keras.utils import np_utils
 from keras.models import Sequential
 from keras.layers.core import Dense
@@ -9,11 +10,11 @@ from keras.callbacks import TensorBoard
 
 
 # Model parameters
-batch_size = 5
-hidden_units = 128
-nb_classes = 13
-nb_epoch = 200
-model_name = 'LSTM_voice_recog'
+batch_size = 20
+hidden_units = 75
+nb_classes = 14
+nb_epoch = 250
+model_name = 'model'
 user_indep = True
 
 # Data loading and spliting
@@ -22,6 +23,8 @@ f = np.load('features.npz')
 X = f['X']
 Y =f['Y']
 labels = f['labels']
+unique_labels = list(set(labels))
+unique_labels.append('Nieznany')
 people = f['people']
 if user_indep:
     lpgo = LeavePGroupsOut(n_groups=3)
@@ -39,12 +42,10 @@ y_test = np_utils.to_categorical(y_test, nb_classes)
 print('Build model...')
 model = Sequential()
 model.add(LSTM(output_dim=hidden_units, init='uniform', inner_init='uniform',
-               forget_bias_init='one', activation='tanh', inner_activation='sigmoid', input_shape=X_train.shape[1:]))
-model.add(Dense(100,activation='relu'))
-model.add(Dense(50,activation='relu'))
+               forget_bias_init='one', activation='tanh', inner_activation='sigmoid', input_shape=X_train.shape[1:], return_sequences=False))
 model.add(Dense(nb_classes,activation='softmax'))
-board=TensorBoard(log_dir='/tmp/' + model_name, histogram_freq=50, write_graph=True, write_images=False)
-model.compile(loss='mean_squared_error', optimizer='rmsprop', metrics=['accuracy'])
+board=TensorBoard(log_dir='/tmp/' + model_name, histogram_freq=5, write_graph=True, write_images=False)
+model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
 # Training model
 print("Train model...")
@@ -56,11 +57,12 @@ model.fit(X_train, y_train,
 
 # Testing model
 loss,score = model.evaluate(X_test, y_test, batch_size=batch_size)
-print('\nTest score: %.2f%%, Loss: %.2f%%' % (score,loss))
+print('\nTest score: %.2f%%, Loss: %.2f' % (score*100,loss))
 
 # Saving model:
 with open("models/"+model_name+".json", "w") as json_file:
     json_file.write(model.to_json())
+np.savez("models/labels.npz",labels = unique_labels)
 # serialize weights to HDF5
 model.save_weights("models/"+model_name+".h5")
 print("Saved model to disk")

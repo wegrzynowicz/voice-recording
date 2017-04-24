@@ -1,6 +1,4 @@
 *.wav
 .idea/*
 *.jpg
-*.npz
-*.h5
-*.json
+recognition/features.npz
