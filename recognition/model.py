@@ -10,12 +10,13 @@ import os.path
 import sys
 
 
-def load_model(model_name = "model"):
-    content = open('models/'+model_name+".json",'r').read()
-    config  = json.loads(content)
+def load_model(model_name="model"):
+    content = open('models/' + model_name + ".json", 'r').read()
+    config = json.loads(content)
     model = model_from_config(config)
-    model.load_weights('models/'+model_name+".h5")
+    model.load_weights('models/' + model_name + ".h5")
     return model
+
 
 def convert_2_wav(path):
     directory, filename = os.path.split(path)
@@ -24,6 +25,7 @@ def convert_2_wav(path):
     call(('ffmpeg.exe', '-i', path, new_path), shell=True)
     # os.remove(path)
     return new_path
+
 
 def get_features(path, features_dim=26):
     """
@@ -47,28 +49,30 @@ def get_features(path, features_dim=26):
                           nfilt=features_dim, nfft=512, lowfreq=0, highfreq=None, preemph=0.97)
     return fbank_feat
 
-def check_label(prediction,labels_file='labels'):
-    f = np.load("models/"+labels_file+'.npz')
+
+def check_label(prediction, labels_file='labels'):
+    f = np.load("models/" + labels_file + '.npz')
     labels = f['labels']
     return labels[prediction]
 
 
-def recognize(path,features_dim = 26, max_length=200):
+def recognize(path, features_dim=26, max_length=200):
     try:
         model = load_model()
-        fbank_feat = get_features(path,features_dim)
+        fbank_feat = get_features(path, features_dim)
         fbank_feat = sequence.pad_sequences(fbank_feat.T, maxlen=max_length, dtype=np.float)
         fbank_feat = preprocessing.scale(fbank_feat, axis=1, with_std=False)
         fbank_feat = fbank_feat / np.max(np.max(np.abs(fbank_feat)))
-        fbank_feat = fbank_feat.reshape(1,max_length,features_dim)
-        pred = np.argmax(model.predict(fbank_feat,1))
+        fbank_feat = fbank_feat.reshape(1, max_length, features_dim)
+        pred = np.argmax(model.predict(fbank_feat, 1))
     except:
         return 'Error'
     return check_label(pred)
 
+
 if __name__ == "__main__":
-    if len(sys.argv)>1:
+    if len(sys.argv) > 1:
         label = recognize(sys.argv[1])
     else:
-        raise OSError('No audio file path specified')
+        raise IOError('No audio file path specified')
     print(label)
